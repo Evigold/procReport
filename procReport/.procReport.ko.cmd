@@ -1,0 +1,1 @@
+cmd_/home/evi/Documents/procReport/procReport/procReport.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/evi/Documents/procReport/procReport/procReport.ko /home/evi/Documents/procReport/procReport/procReport.o /home/evi/Documents/procReport/procReport/procReport.mod.o ;  true
