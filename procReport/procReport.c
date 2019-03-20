@@ -61,8 +61,7 @@ static const struct file_operations proc_fops = {
  **/
 int proc_init (void) {
   create_list();
-  proc_create("proc_report", 0, NULL, &proc_fops);  //&proc_fops called 
-  // print2log();
+  proc_create("proc_report", 0, NULL, &proc_fops); 
   return 0;
 }
 
@@ -153,23 +152,23 @@ static int proc_open(struct inode *inode, struct file *file) {
 
 /**
  * Using the global_head variable, it prints the report of the data collected to /proc/proc_report.
-   Moved prints to one method so only one loop is used.
+ * Prints to both var/sys/log and procReport in one iteration of the pages.
  **/
 static int proc_show(struct seq_file *m, void *v) {
   proc_data *proc_temp = global_head.head;
   printk(KERN_INFO "PROCESS REPORT:\n");
   printk(KERN_INFO "proc_id,proc_name,contig_pages,noncontig_pages,total_pages\n");
   seq_printf(m, "PROCESS REPORT:\n");
-  // seq_printf(m, "proc_id,proc_name,contig_pages,noncontig_pages,total_pages\n");
   seq_printf(m, "%8s, %20s, %15s, %15s, %15s\n\n" ,"proc_id", "proc_name", "contig_pages", "noncontig_pages", "total_pages");
-  // seq_printf(m, "proc_id,proc_name,contig_pages,noncontig_pages,total_pages\n");
+
   while(proc_temp->next) {
     seq_printf(m, "%8d,%20s,%15d,%15d,%15d\n", proc_temp->proc_id, proc_temp->proc_name, proc_temp->contig_pages, proc_temp->noncontig_pages, proc_temp->contig_pages + proc_temp->noncontig_pages);
     printk(KERN_INFO "%8d,%20s,%15d,%15d,%15d\n", proc_temp->proc_id, proc_temp->proc_name, proc_temp->contig_pages, proc_temp->noncontig_pages, proc_temp->contig_pages + proc_temp->noncontig_pages);
     proc_temp = proc_temp->next;  
   }
-  seq_printf(m, "TOTALS,,%d,%d,%d\n", global_head.total_cnt, global_head.total_ncnt, global_head.total_cnt + global_head.total_ncnt);
-  printk(KERN_INFO "TOTALS,,%d,%d,%d\n", global_head.total_cnt, global_head.total_ncnt, global_head.total_cnt + global_head.total_ncnt);
+
+  seq_printf(m, "%8s,,%35d,%15d,%15d\n", "TOTALS", global_head.total_cnt, global_head.total_ncnt, global_head.total_cnt + global_head.total_ncnt);
+  printk(KERN_INFO "%8s,,%35d,%15d,%15d\n", "TOTALS", global_head.total_cnt, global_head.total_ncnt, global_head.total_cnt + global_head.total_ncnt);
   return 0;
 }
 
